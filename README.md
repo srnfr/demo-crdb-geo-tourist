@@ -147,7 +147,7 @@ index would be preferable since it permits far more complex comparisons.
 of a path along the center of the Thames in central London.  It uses GeoJSON functions and
 [this nice UI](https://geojson.io/#map=14/51.5011/-0.1005).
 
-## Run the app in one of 3 ways: (1) locally, (2) locally, but with app in a Docker container, (3) in Kubernetes (K8s)
+## Run the app in one of 3 ways: (1) locally
 
 ### Sign up for MapBox and get a token
 
@@ -178,6 +178,9 @@ $ export PGCLUSTER='vv'
 
 * Start the Python Flask app, which provides the data REST service and also serves the app's HTML template
 and static assets (PNG, CSS, and JS files):
+
+$ set -o allexport; source ../CRDB.env ; set +o allexport
+$ python3 ./map_app.py 
 
 $ curl -s -k https://storage.googleapis.com/crl-goddard-gis/osm_50k_eu.txt.gz | gunzip - | ./load_osm_stdin.py
 ```

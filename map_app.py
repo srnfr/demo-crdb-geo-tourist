@@ -16,6 +16,10 @@ database = os.getenv("PGDATABASE", "defaultdb")
 def db_connect():
   return psycopg2.connect(
     database=database,
+    port=int(os.getenv("PGPORT", "26257")),
+    host=os.getenv("PGHOST", "localhost"),
+    sslmode='require',
+    options='--cluster='+os.getenv("PGCLUSTER", "test"),
     user=os.getenv("PGUSER", "root"),
     password=os.getenv("PGPASSWORD", ""),
     application_name="CRDB Geo Tourist"
