@@ -167,6 +167,12 @@ $ export MAPBOX_TOKEN=$( cat ../MapBox_Token.txt )
 
 * Use a cloud CRDB
 
+* Install python
+```
+$ pip3 install postgres psycopg2
+$ pip3 install -m requirements.txt 
+```
+
 * Fill a file named ```../CRDB.env``` containing all the needed params :
 ```
 PGHOST='zz'
