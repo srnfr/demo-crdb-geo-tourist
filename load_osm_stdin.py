@@ -34,12 +34,14 @@ sites.append({"name": "Trastevere", "lat": 41.886071, "lon": 12.467422})
 conn = None
 def get_db():
   global conn
-  if conn is None:
+if conn is None:
     conn = psycopg2.connect(
       database=database
       , user=os.getenv("PGUSER", "root")
       , port=int(os.getenv("PGPORT", "26257"))
       , host=os.getenv("PGHOST", "localhost")
+      , sslmode='require'
+      , options='--cluster='+os.getenv("PGCLUSTER", "test")
       , application_name="OSM Data Loader"
     )
   return conn
