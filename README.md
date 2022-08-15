@@ -167,14 +167,20 @@ $ export MAPBOX_TOKEN=$( cat ../MapBox_Token.txt )
 
 * Use a cloud CRDB
 
+* Fill a file named ../CRDB.env containing all the needed params :
+```
+PGHOST='zz'
+PGPORT=26257
+PGPASSWORD='xxx'
+PGUSER='yy'
+PGCLUSTER='vv'
+```
+
 * Load the data (see above) using [this script](./load_osm_stdin.py):
 
 ```
-$ export PGHOST='zz'
-$ export PGPORT=26257
-$ export PGPASSWORD='xxx'
-$ export PGUSER='yy'
-$ export PGCLUSTER='vv'
+$ curl -s -k https://storage.googleapis.com/crl-goddard-gis/osm_50k_eu.txt.gz | gunzip - | ./load_osm_stdin.py
+```
 
 * Start the Python Flask app, which provides the data REST service and also serves the app's HTML template
 and static assets (PNG, CSS, and JS files):
