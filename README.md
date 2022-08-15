@@ -163,11 +163,11 @@ deployment option you choose:
 $ export MAPBOX_TOKEN=$( cat ../MapBox_Token.txt )
 ```
 
-### If running locally, with or without Docker
+### If running locally
 
 * Use a cloud CRDB
 
-* Fill a file named ../CRDB.env containing all the needed params :
+* Fill a file named ```../CRDB.env``` containing all the needed params :
 ```
 PGHOST='zz'
 PGPORT=26257
@@ -179,6 +179,7 @@ PGCLUSTER='vv'
 * Load the data (see above) using [this script](./load_osm_stdin.py):
 
 ```
+$ set -o allexport; source ../CRDB.env ; set +o allexport
 $ curl -s -k https://storage.googleapis.com/crl-goddard-gis/osm_50k_eu.txt.gz | gunzip - | ./load_osm_stdin.py
 ```
 
@@ -188,5 +189,4 @@ and static assets (PNG, CSS, and JS files):
 ```
 $ set -o allexport; source ../CRDB.env ; set +o allexport
 $ python3 ./map_app.py 
-$ curl -s -k https://storage.googleapis.com/crl-goddard-gis/osm_50k_eu.txt.gz | gunzip - | ./load_osm_stdin.py
 ```
