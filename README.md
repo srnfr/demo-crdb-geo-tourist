@@ -185,8 +185,8 @@ $ curl -s -k https://storage.googleapis.com/crl-goddard-gis/osm_50k_eu.txt.gz | 
 * Start the Python Flask app, which provides the data REST service and also serves the app's HTML template
 and static assets (PNG, CSS, and JS files):
 
+```
 $ set -o allexport; source ../CRDB.env ; set +o allexport
 $ python3 ./map_app.py 
-
 $ curl -s -k https://storage.googleapis.com/crl-goddard-gis/osm_50k_eu.txt.gz | gunzip - | ./load_osm_stdin.py
 ```
