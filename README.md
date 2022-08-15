@@ -165,93 +165,19 @@ $ export MAPBOX_TOKEN=$( cat ../MapBox_Token.txt )
 
 ### If running locally, with or without Docker
 
-* Download, install, and start a CockroachDB cluster using version 20.2 or above.  Installation instructions
-can be found [here](https://www.cockroachlabs.com/docs/stable/install-cockroachdb-mac.html), and the startup
-procesure is documented [here](https://www.cockroachlabs.com/docs/v20.2/start-a-local-cluster).  The default
-user is `root` and the default database is `defaultdb`, so these values don't need to be set.
+* Use a cloud CRDB
 
 * Load the data (see above) using [this script](./load_osm_stdin.py):
 
 ```
-$ export PGHOST=localhost
+$ export PGHOST='zz'
 $ export PGPORT=26257
-$ curl -s -k https://storage.googleapis.com/crl-goddard-gis/osm_50k_eu.txt.gz | gunzip - | ./load_osm_stdin.py
-```
-
-### Run the app locally, without Docker
+$ export PGPASSWORD='xxx'
+$ export PGUSER='yy'
+$ export PGCLUSTER='vv'
 
 * Start the Python Flask app, which provides the data REST service and also serves the app's HTML template
 and static assets (PNG, CSS, and JS files):
 
+$ curl -s -k https://storage.googleapis.com/crl-goddard-gis/osm_50k_eu.txt.gz | gunzip - | ./load_osm_stdin.py
 ```
-$ export PGHOST=localhost
-$ export PGPORT=26257
-```
-
-### Run the app via its Docker image
-
-* Edit `./docker_run_image.sh`, changing environment variables as necessary to suit your deployment.
-
-```
-$ ./docker_run_image.sh
-```
-
-Optional: stop the app, disable the use of the GIN index in favor of the
-primary key index on the geoash substring, then restart the app.  Try both ways
-(e.g. `unset USE_GEOHASH` vs. `export USE_GEOHASH=true`) and compare the time
-it takes to load the amenity icons in the browser.
-
-```
-$ export USE_GEOHASH=true
-```
-
-### Deploy the app in Kubernetes (K8s) using the CockroachDB K8s operator
-
-* You'll need access to a K8s environment.  This document describes running this in Google's GKE.
-* What follows is derived from [these docs](https://www.cockroachlabs.com/docs/v20.2/orchestrate-cockroachdb-with-kubernetes#install-the-operator).
-* **The procedure outlined below demonstrates the following:**
-  - Deploying the CockroachDB K8s operator
-  - Using that to spin up a 3 node CockroachDB cluster
-  - The DB Console
-  - Deployment of the CockroachDB Geo Tourist web app
-  - Loading data for the app into the CockroachDB cluster
-  - Performing a zero-downtime upgrade of the CockroachDB software
-  - Scaling the cluster from 3 to 4 pods
-  - Terminating one of the pods and verifying that the app remains available
-* The files in the `./k8s` subdirectory are used for a K8s deployment.  They are:
-
-  - [`deploy_k8s.sh`](./k8s/deploy_k8s.sh): script to deploy a 5 VM K8s cluster in GKE
-  - [`data-loader.yaml`](./k8s/data-loader.yaml): pod definition which loads the data
-  - [`crdb-geo-tourist.yaml`](./k8s/crdb-geo-tourist.yaml): app deployment and load balancer service
-  - [`cockroachdb.yaml`](./k8s/cockroachdb.yaml): an edited version of the `example.yaml` file provided in the operator docs (above)
-  - [`create_user.sql`](./k8s/create_user.sql): used by the deployment script to create a role with a password
-  - [`rolling_upgrade.yaml`](./k8s/rolling_upgrade.yaml): used to perform a zero-downtime rolling upgrade of CockroachDB
-  - [`scale_out.yaml`](./k8s/scale_out.yaml): used to scale the 3 node cluster out to 4 nodes (also an online operation)
-
-* Change to the `./k8s` directory: `cd ./k8s/`
-* Edit `./deploy_k8s.sh`, changing any of the following to suit your needs:
-
-```
-MACHINETYPE="e2-standard-4"
-NAME="${USER}-geo-tourist"
-ZONE="us-east4-b"
-N_NODES=5
-```
-* Run the script and follow the prompts: `./deploy_k8s.sh`
-
-### If you need to rebuild the Docker image
-
-Edit Dockerfile as necessary, and then change `./docker_include.sh` to set
-`docker_id` and anything else you'd like to change.
-
-```
-$ ./docker_build_image.sh
-$ ./docker_tag_publish.sh
-
-```
-
-## References
-
-1. [Geohash precision as a function of length](https://gis.stackexchange.com/questions/115280/what-is-the-precision-of-a-geohash)
-
-
